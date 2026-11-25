@@ -6,7 +6,7 @@
  * titre en cours, télécommande, applis favorites. Plusieurs TV, style verre, thème clair/sombre, éditeur visuel.
  */
 
-const CARD_VERSION = "1.0.1";
+const CARD_VERSION = "1.0.2";
 
 /* === NUANCE COMMUNE v2 (cartes Johan854) ===
  * Bloc identique dans toutes les cartes. Options : nuance, nuance_perso, intensite.
@@ -266,8 +266,8 @@ class FireTvCard extends HTMLElement {
           ${adb ? `<button class="b" data-key="${i}" data-k="BACK" title="Retour" ${dis}><ha-icon icon="mdi:arrow-u-left-top"></ha-icon></button>
           <button class="b" data-key="${i}" data-k="HOME" title="Accueil" ${dis}><ha-icon icon="mdi:home-outline"></ha-icon></button>` : ""}
           <button class="b" data-svc="${i}" data-s="media_play_pause" title="Lecture / pause" ${dis}><ha-icon icon="${playing ? "mdi:pause" : "mdi:play"}"></ha-icon></button>
-          <button class="b" data-svc="${i}" data-s="volume_down" title="Baisser le son" ${dis}><ha-icon icon="mdi:volume-minus"></ha-icon></button>
-          <button class="b" data-svc="${i}" data-s="volume_up" title="Monter le son" ${dis}><ha-icon icon="mdi:volume-plus"></ha-icon></button>
+          ${t.volume ? `<button class="b" data-svc="${i}" data-s="volume_down" title="Baisser le son" ${dis}><ha-icon icon="mdi:volume-minus"></ha-icon></button>
+          <button class="b" data-svc="${i}" data-s="volume_up" title="Monter le son" ${dis}><ha-icon icon="mdi:volume-plus"></ha-icon></button>` : ""}
         </div>
         ${favs.length ? `<div class="favs">${favs.map((f, k) => `<button class="fav" style="--app:${esc(f.color)}" data-fav="${i}" data-f="${k}" title="Lancer ${esc(f.name)}" ${dis}><ha-icon icon="${esc(f.icon)}"></ha-icon>${esc(cut(f.name, 14))}</button>`).join("")}</div>` : ""}
       </div>`;
@@ -366,7 +366,7 @@ const LABELS = { ...GV_LABELS,
   title: "Titre (facultatif)", theme: "Thème", columns: "Colonnes (0 = automatique)", refresh: "Rafraîchissement de la caméra de capture (secondes)",
   logos: "Utiliser mes logos (dossier ci-dessous, fichiers <clé>.png)", logos_path: "Dossier des logos", favorites: "Applis favorites (toutes les TV)",
   entity: "Fire TV (media_player)", name: "Nom (facultatif)", screenshot_entity: "Caméra de capture (facultatif, ex. caméra « Fichier local »)",
-  use_screencap: "Utiliser la capture de l'intégration ADB", tile_apps: "Toujours afficher la tuile pour ces applis",
+  use_screencap: "Utiliser la capture de l'intégration ADB", volume: "Boutons de volume (si le Fire TV règle le son)", tile_apps: "Toujours afficher la tuile pour ces applis",
   tv_picture: "Photo du téléviseur (facultatif, ex. /local/image/tv.png)", screen_area: "Zone de l'écran dans la photo, en % : gauche, haut, largeur, hauteur",
 };
 const TV_SCHEMA = [
@@ -375,6 +375,7 @@ const TV_SCHEMA = [
   { name: "favorites", selector: { select: { multiple: true, custom_value: true, options: APP_OPTIONS } } },
   { name: "screenshot_entity", selector: { entity: { domain: ["camera", "image"] } } },
   { name: "use_screencap", selector: { boolean: {} } },
+  { name: "volume", selector: { boolean: {} } },
   { name: "tile_apps", selector: { select: { multiple: true, custom_value: true, options: APP_OPTIONS } } },
   { name: "tv_picture", selector: { text: {} } },
   { name: "screen_area", selector: { text: {} } },

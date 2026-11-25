@@ -4,7 +4,7 @@ Carte Home Assistant pour vos **Fire TV** et **Android TV** (intégration *Andro
 
 - **Capture de l'écran** quand elle est possible (menus, YouTube…).
 - **Tuile de l'appli en cours** quand la capture est bloquée par l'appli (Free TV / OQEE, Netflix, Prime Video, Disney+, Apple TV, Canal+…), avec le titre du programme quand le Fire TV le fournit.
-- **Télécommande** : marche/arrêt, retour, accueil, lecture/pause, volume.
+- **Télécommande** : marche/arrêt, retour, accueil, lecture/pause (boutons de volume en option : `volume: true`).
 - **Applis favorites** à lancer d'un appui.
 - Plusieurs TV, style verre, thème clair/sombre automatique, nuance de couleur, éditeur visuel, textes en français.
 
@@ -74,5 +74,6 @@ apps:
 | `tvs[].entity` | Entité `media_player` du Fire TV |
 | `tvs[].screenshot_entity` | Caméra ou image de capture (facultatif) |
 | `tvs[].use_screencap` | `false` pour ignorer la capture de l'intégration |
+| `tvs[].volume` | `true` pour afficher les boutons de volume (masqués par défaut) |
 | `tvs[].tile_apps` | Applis toujours affichées en tuile |
 | `tvs[].tv_picture`, `tvs[].screen_area` | Photo du téléviseur |
