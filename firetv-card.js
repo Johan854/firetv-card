@@ -6,7 +6,7 @@
  * titre en cours, télécommande, applis favorites. Plusieurs TV, style verre, thème clair/sombre, éditeur visuel.
  */
 
-const CARD_VERSION = "1.0.0";
+const CARD_VERSION = "1.0.1";
 
 /* === NUANCE COMMUNE v2 (cartes Johan854) ===
  * Bloc identique dans toutes les cartes. Options : nuance, nuance_perso, intensite.
@@ -53,10 +53,10 @@ const DEFAULTS = {
 /* Applis connues : clé, nom, couleur, icône, protégée (capture bloquée), identifiants Android.
  * « protégée » : la capture d'écran est noire ou absente, la carte affiche toujours la tuile. */
 const APPS = [
-  ["accueil", "Accueil", "#5b6cff", "mdi:home-outline", false, ["com.amazon.tv.launcher", "com.amazon.firebat", "com.google.android.tvlauncher", "com.google.android.apps.tv.launcherx"]],
+  ["accueil", "Accueil", "#5b6cff", "mdi:home-outline", false, ["com.amazon.tv.launcher", "com.google.android.tvlauncher", "com.google.android.apps.tv.launcherx"]],
   ["oqee", "Free TV (OQEE)", "#d6313a", "mdi:television-classic", true, ["net.oqee.androidtv.amazon", "net.oqee.androidtv", "net.oqee.android"]],
   ["netflix", "Netflix", "#c4161c", "mdi:movie-open-outline", true, ["com.netflix.ninja", "com.netflix.mediaclient"]],
-  ["prime", "Prime Video", "#1f8fd6", "mdi:play-box-outline", true, ["com.amazon.avod", "com.amazon.avod.thirdpartyclient", "com.amazon.firebat.video"]],
+  ["prime", "Prime Video", "#1f8fd6", "mdi:play-box-outline", true, ["com.amazon.firebat", "com.amazon.avod", "com.amazon.avod.thirdpartyclient"]],
   ["disney", "Disney+", "#1f3f9c", "mdi:castle", true, ["com.disney.disneyplus"]],
   ["appletv", "Apple TV", "#3a3d44", "mdi:television-play", true, ["com.apple.atve.amazon.appletv", "com.apple.atve.androidtv.appletv"]],
   ["canal", "Canal+", "#2b2b2b", "mdi:television-shimmer", true, ["com.canal.android.canal", "com.canalplus.canalplus"]],
