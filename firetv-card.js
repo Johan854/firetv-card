@@ -6,7 +6,7 @@
  * titre en cours, télécommande, applis favorites. Plusieurs TV, style verre, thème clair/sombre, éditeur visuel.
  */
 
-const CARD_VERSION = "1.0.2";
+const CARD_VERSION = "1.0.3";
 
 /* === NUANCE COMMUNE v2 (cartes Johan854) ===
  * Bloc identique dans toutes les cartes. Options : nuance, nuance_perso, intensite.
@@ -247,7 +247,11 @@ class FireTvCard extends HTMLElement {
       const on = !!s && !OFF.includes(st);
       const a = (s && s.attributes) || {};
       const name = t.name || a.friendly_name || `TV ${i + 1}`;
-      const playing = st === "playing";
+      // L'état lecture/pause remonté par ADB est souvent faux sur les applis de streaming :
+      // par défaut on affiche « Allumé » et un bouton lecture/pause neutre (option play_state pour l'état brut).
+      const trust = t.play_state === true;
+      const playing = trust && st === "playing";
+      const label = !on || trust ? STATUS[st] || st : "Allumé";
       const art = this._screen(t, i, s, on);
       const framed = safeUrl(t.tv_picture);
       const [l, tp, w, hh] = screenArea(t.screen_area);
@@ -259,13 +263,13 @@ class FireTvCard extends HTMLElement {
       const dis = on ? "" : "disabled";
       return `
       <div class="tv ${on ? "on" : "off"} ${playing ? "play" : ""}" data-i="${i}">
-        <div class="top"><b>${esc(name)}</b><span class="st"><i></i>${STATUS[st] || st}</span></div>
+        <div class="top"><b>${esc(name)}</b><span class="st"><i></i>${esc(label)}</span></div>
         <div class="art" data-more="${i}" title="Détails">${scr}</div>
         <div class="btns">
           <button class="b pw" data-pw="${i}" title="${on ? "Éteindre" : "Allumer"}"><ha-icon icon="mdi:power"></ha-icon></button>
           ${adb ? `<button class="b" data-key="${i}" data-k="BACK" title="Retour" ${dis}><ha-icon icon="mdi:arrow-u-left-top"></ha-icon></button>
           <button class="b" data-key="${i}" data-k="HOME" title="Accueil" ${dis}><ha-icon icon="mdi:home-outline"></ha-icon></button>` : ""}
-          <button class="b" data-svc="${i}" data-s="media_play_pause" title="Lecture / pause" ${dis}><ha-icon icon="${playing ? "mdi:pause" : "mdi:play"}"></ha-icon></button>
+          <button class="b" data-svc="${i}" data-s="media_play_pause" title="Lecture / pause" ${dis}><ha-icon icon="${trust ? (playing ? "mdi:pause" : "mdi:play") : "mdi:play-pause"}"></ha-icon></button>
           ${t.volume ? `<button class="b" data-svc="${i}" data-s="volume_down" title="Baisser le son" ${dis}><ha-icon icon="mdi:volume-minus"></ha-icon></button>
           <button class="b" data-svc="${i}" data-s="volume_up" title="Monter le son" ${dis}><ha-icon icon="mdi:volume-plus"></ha-icon></button>` : ""}
         </div>
@@ -366,7 +370,7 @@ const LABELS = { ...GV_LABELS,
   title: "Titre (facultatif)", theme: "Thème", columns: "Colonnes (0 = automatique)", refresh: "Rafraîchissement de la caméra de capture (secondes)",
   logos: "Utiliser mes logos (dossier ci-dessous, fichiers <clé>.png)", logos_path: "Dossier des logos", favorites: "Applis favorites (toutes les TV)",
   entity: "Fire TV (media_player)", name: "Nom (facultatif)", screenshot_entity: "Caméra de capture (facultatif, ex. caméra « Fichier local »)",
-  use_screencap: "Utiliser la capture de l'intégration ADB", volume: "Boutons de volume (si le Fire TV règle le son)", tile_apps: "Toujours afficher la tuile pour ces applis",
+  use_screencap: "Utiliser la capture de l'intégration ADB", volume: "Boutons de volume (si le Fire TV règle le son)", play_state: "Afficher l'état lecture/pause remonté par le Fire TV (souvent faux)", tile_apps: "Toujours afficher la tuile pour ces applis",
   tv_picture: "Photo du téléviseur (facultatif, ex. /local/image/tv.png)", screen_area: "Zone de l'écran dans la photo, en % : gauche, haut, largeur, hauteur",
 };
 const TV_SCHEMA = [
@@ -376,6 +380,7 @@ const TV_SCHEMA = [
   { name: "screenshot_entity", selector: { entity: { domain: ["camera", "image"] } } },
   { name: "use_screencap", selector: { boolean: {} } },
   { name: "volume", selector: { boolean: {} } },
+  { name: "play_state", selector: { boolean: {} } },
   { name: "tile_apps", selector: { select: { multiple: true, custom_value: true, options: APP_OPTIONS } } },
   { name: "tv_picture", selector: { text: {} } },
   { name: "screen_area", selector: { text: {} } },

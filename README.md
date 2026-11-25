@@ -75,5 +75,6 @@ apps:
 | `tvs[].screenshot_entity` | Caméra ou image de capture (facultatif) |
 | `tvs[].use_screencap` | `false` pour ignorer la capture de l'intégration |
 | `tvs[].volume` | `true` pour afficher les boutons de volume (masqués par défaut) |
+| `tvs[].play_state` | `true` pour afficher « En lecture / En pause » (état ADB, souvent faux sur les applis de streaming) |
 | `tvs[].tile_apps` | Applis toujours affichées en tuile |
 | `tvs[].tv_picture`, `tvs[].screen_area` | Photo du téléviseur |
