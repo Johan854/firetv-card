@@ -6,7 +6,7 @@
  * titre en cours, télécommande, applis favorites. Plusieurs TV, style verre, thème clair/sombre, éditeur visuel.
  */
 
-const CARD_VERSION = "1.0.3";
+const CARD_VERSION = "1.0.4";
 
 /* === NUANCE COMMUNE v2 (cartes Johan854) ===
  * Bloc identique dans toutes les cartes. Options : nuance, nuance_perso, intensite.
@@ -209,11 +209,11 @@ class FireTvCard extends HTMLElement {
     return !e || !e.platform || e.platform === "androidtv";
   }
 
-  _logo(app, i) {
+  // Logo perso de l'appli : fichier fourni dans la config, ou <logos_path>/<clé>.png si logos: true.
+  _logoSrc(app) {
     const c = this._config;
     const src = app.logo || (c.logos && app.key ? String(c.logos_path || "").replace(/\/?$/, "/") + app.key + ".png" : "");
-    const icon = `<ha-icon icon="${esc(app.icon)}"></ha-icon>`;
-    return safeUrl(src) ? `<span class="lg has"><img data-logo="${i}" src="${esc(src)}" alt="">${icon}</span>` : `<span class="lg">${icon}</span>`;
+    return safeUrl(src) ? src : "";
   }
 
   _screen(t, i, s, on) {
@@ -228,8 +228,11 @@ class FireTvCard extends HTMLElement {
       return `<img class="shot" ${cam ? `data-cam="${i}"` : ""} src="${esc(shot)}" alt="">`;
     const title = a.media_series_title && a.media_title ? `${a.media_series_title} · ${a.media_title}` : a.media_title || "";
     const ap = app || { key: "accueil", name: "Allumé", color: "#5b6cff", icon: "mdi:television", logo: "" };
-    return `<div class="tile" style="--app:${esc(ap.color)}">
-        ${this._logo(ap, i)}
+    // Avec un logo perso, l'image remplit tout l'écran ; si elle ne se charge pas, retour à la tuile avec icône.
+    const src = this._logoSrc(ap);
+    return `<div class="tile ${src ? "full" : ""}" style="--app:${esc(ap.color)}">
+        ${src ? `<img class="bgimg" data-logo="${i}" src="${esc(src)}" alt="">` : ""}
+        <span class="lg"><ha-icon icon="${esc(ap.icon)}"></ha-icon></span>
         <b>${esc(cut(ap.name, 28))}</b>
         ${title ? `<small>${esc(cut(String(title), 48))}</small>` : ""}
       </div>`;
@@ -320,10 +323,14 @@ class FireTvCard extends HTMLElement {
         .tile { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.35em; padding:.6em; text-align:center;
           background:linear-gradient(145deg, color-mix(in srgb,var(--app) 78%,#000) 0%, color-mix(in srgb,var(--app) 40%,#05060a) 100%); color:#fff; }
         .tile b { font-size:1em; font-weight:650; line-height:1.15; } .tile small { font-size:.78em; opacity:.85; line-height:1.2; }
-        .lg { width:3.2em; height:3.2em; border-radius:.9em; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.16); overflow:hidden; }
-        .lg ha-icon { --mdc-icon-size:1.8em; } .lg img { display:none; width:100%; height:100%; object-fit:contain; }
-        .lg.has img { display:block; } .lg.has ha-icon { display:none; } .lg.has.err img { display:none; } .lg.has.err ha-icon { display:block; }
-        .lg.has:not(.err) { background:transparent; }
+        .lg { width:3.2em; height:3.2em; border-radius:.9em; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.16); }
+        .lg ha-icon { --mdc-icon-size:1.8em; }
+        .tile { position:relative; }
+        .tile .bgimg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .tile.full:not(.err) .lg, .tile.full:not(.err) b { display:none; }
+        .tile.full:not(.err) small { position:absolute; left:0; right:0; bottom:0; padding:.5em .7em; opacity:1;
+          background:linear-gradient(0deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,0) 100%); text-shadow:0 1px 2px #000; }
+        .tile.err .bgimg { display:none; }
         .btns { display:flex; gap:.4em; }
         .b { flex:1; display:flex; align-items:center; justify-content:center; padding:.6em .2em; border-radius:1em; background:var(--tv-fill); border:1px solid var(--tv-fill-b); }
         .b.pw { color:var(--tv-err); } .tv.off .b.pw { color:var(--tv-on); }

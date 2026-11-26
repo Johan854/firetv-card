@@ -42,7 +42,7 @@ Par défaut, la carte utilise des icônes. Pour vos propres logos, déposez des 
 logos: true
 logos_path: /local/image/logos/
 ```
-Un logo manquant est remplacé par l'icône.
+L'image remplit tout l'écran du téléviseur dans la carte : prenez de préférence des images au format 16/9 (par ex. 1280 × 720). Le titre en cours s'affiche en bas de l'image. Un logo manquant est remplacé par l'icône.
 
 ### Applis perso
 ```yaml
